@@ -3,9 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>アイデア出しボード</title>
+    <meta name="description" content="アイデアを出すのに最適なホワイトボード">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <img src="ごみ箱.png" alt="ごみ箱" class="trash">
+    <div class="menu">
+        <button id="add">ふせん追加</button>
+        <button id="add2">枠追加</button>
+        <button id="erase">全取り消し</button>    
+    </div>
+    <button id="add">ふせん追加</button>
+    <button id="add2">枠追加</button>
+    <button id="erase">全取り消し</button>
+    <textarea name="sticker" id="text"></textarea>
+    
+    
+    <script>
+        const textarea = document.getElementById('text');
+
+let isDragging = false;
+let offsetX, offsetY;
+
+// テキストエリア上でマウスダウン
+textarea.addEventListener('mousedown', (e) => {
+    // 右下のresizeエリアでは動作しないように
+    const rect = textarea.getBoundingClientRect();
+    if (e.offsetX > rect.width - 20 && e.offsetY > rect.height - 20) return;
+
+    isDragging = true;
+    offsetX = e.clientX - textarea.offsetLeft;
+    offsetY = e.clientY - textarea.offsetTop;
+    textarea.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none';
+});
+
+// マウスアップ時、ドラッグ終了
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+    textarea.style.cursor = 'grab';
+    document.body.style.userSelect = 'auto';
+});
+
+// マウス移動時、位置変更
+document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const left = e.clientX - offsetX;
+    const top = e.clientY - offsetY;
+    textarea.style.left = left + 'px';
+    textarea.style.top = top + 'px';
+});
+</script>
     
 </body>
 </html>
