@@ -13,48 +13,203 @@
     <div class="menu">
         <button id="add">ふせん追加</button>
         <button id="add2">枠追加</button>
-        <button id="erase">全取り消し</button>    
+        <button id="erase">全取り消し</button>
+        <button id="save">保存</button>    
     </div>
-    <button id="add">ふせん追加</button>
-    <button id="add2">枠追加</button>
-    <button id="erase">全取り消し</button>
-    <textarea name="sticker" id="text"></textarea>
+  
+    <!-- <textarea name="text_area" id="text_area"></textarea> -->
     
     
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        const textarea = document.getElementById('text');
 
-let isDragging = false;
-let offsetX, offsetY;
+    let count = 1;
 
-// テキストエリア上でマウスダウン
-textarea.addEventListener('mousedown', (e) => {
-    // 右下のresizeエリアでは動作しないように
-    const rect = textarea.getBoundingClientRect();
+    $("#add").on("click", function () {
+  const newTextarea = document.createElement("textarea");
+  const id = `text_area_${count++}`;
+
+  newTextarea.id = id;
+  newTextarea.className = "draggable-textarea";
+  newTextarea.style.position = "absolute";
+  newTextarea.style.left = "100px";
+  newTextarea.style.top = "100px";
+  newTextarea.style.cursor = "grab";
+
+  document.body.appendChild(newTextarea);
+
+  makeDraggable(newTextarea); // 追加したtextareaにもドラッグ処理を設定
+});
+
+function makeDraggable(element) {
+  let isDragging = false;
+  let offsetX, offsetY;
+  const trash = document.querySelector(".trash");
+
+  element.addEventListener('mousedown', (e) => {
+    const rect = element.getBoundingClientRect();
     if (e.offsetX > rect.width - 20 && e.offsetY > rect.height - 20) return;
 
     isDragging = true;
-    offsetX = e.clientX - textarea.offsetLeft;
-    offsetY = e.clientY - textarea.offsetTop;
-    textarea.style.cursor = 'grabbing';
+    offsetX = e.clientX - element.offsetLeft;
+    offsetY = e.clientY - element.offsetTop;
+    element.style.cursor = 'grabbing';
     document.body.style.userSelect = 'none';
-});
+  });
 
-// マウスアップ時、ドラッグ終了
-document.addEventListener('mouseup', () => {
+  document.addEventListener('mouseup', (e) => {
+    if (isDragging) {
+      const trashRect = trash.getBoundingClientRect();
+      const elRect = element.getBoundingClientRect();
+
+      const isOverlapping =
+        elRect.right > trashRect.left &&
+        elRect.left < trashRect.right &&
+        elRect.bottom > trashRect.top &&
+        elRect.top < trashRect.bottom;
+
+      if (isOverlapping) {
+        element.remove();
+      }
+
+      trash.classList.remove("over");
+    }
+
     isDragging = false;
-    textarea.style.cursor = 'grab';
+    element.style.cursor = 'grab';
     document.body.style.userSelect = 'auto';
-});
+  });
 
-// マウス移動時、位置変更
-document.addEventListener('mousemove', (e) => {
+  document.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     const left = e.clientX - offsetX;
     const top = e.clientY - offsetY;
-    textarea.style.left = left + 'px';
-    textarea.style.top = top + 'px';
+    element.style.left = left + 'px';
+    element.style.top = top + 'px';
+
+    const trashRect = trash.getBoundingClientRect();
+    const elRect = element.getBoundingClientRect();
+
+    const isOverlapping =
+      elRect.right > trashRect.left &&
+      elRect.left < trashRect.right &&
+      elRect.bottom > trashRect.top &&
+      elRect.top < trashRect.bottom;
+
+    if (isOverlapping) {
+      trash.classList.add("over");
+    } else {
+      trash.classList.remove("over");
+    }
+  });
+  element.addEventListener('mousedown', (e) => {
+    const rect = element.getBoundingClientRect();
+    if (e.offsetX > rect.width - 20 && e.offsetY > rect.height - 20) return;
+
+    isDragging = true;
+    offsetX = e.clientX - element.offsetLeft;
+    offsetY = e.clientY - element.offsetTop;
+    element.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    element.style.cursor = 'grab';
+    document.body.style.userSelect = 'auto';
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    element.style.left = (e.clientX - offsetX) + 'px';
+    element.style.top = (e.clientY - offsetY) + 'px';
+  });
+}
+
+// const textarea = document.getElementById('text_area');
+// makeDraggable(textarea);
+
+
+//     const textarea = document.getElementById('text_area');
+//     let isDragging = false;
+//     let offsetX, offsetY;
+
+//     // テキストエリア上でマウスダウン
+//     textarea.addEventListener('mousedown', (e) => {
+//     // 右下のresizeエリアでは動作しないように
+//     const rect = textarea.getBoundingClientRect();
+//     if (e.offsetX > rect.width - 20 && e.offsetY > rect.height - 20) return;
+
+//     isDragging = true;
+//     offsetX = e.clientX - textarea.offsetLeft;
+//     offsetY = e.clientY - textarea.offsetTop;
+//     textarea.style.cursor = 'grabbing';
+//     document.body.style.userSelect = 'none';
+// });
+
+// // マウスアップ時、ドラッグ終了
+// document.addEventListener('mouseup', () => {
+//     isDragging = false;
+//     textarea.style.cursor = 'grab';
+//     document.body.style.userSelect = 'auto';
+// });
+
+// // マウス移動時、位置変更
+// document.addEventListener('mousemove', (e) => {
+//     if (!isDragging) return;
+//     const left = e.clientX - offsetX;
+//     const top = e.clientY - offsetY;
+//     textarea.style.left = left + 'px';
+//     textarea.style.top = top + 'px';
+// });
+
+$("#save").on("click", function () {
+  const allFusen = document.querySelectorAll(".draggable-textarea");
+//   console.log("保存");
+  
+  const data = [];
+
+  allFusen.forEach((el) => {
+    data.push({
+      id: el.id,
+      text: el.value,
+      left: el.style.left,
+      top: el.style.top
+    });
+  });
+
+  localStorage.setItem("fusen_data", JSON.stringify(data));
+  console.log("保存しました");
 });
+
+window.addEventListener("DOMContentLoaded", function () {
+  const saved = localStorage.getItem("fusen_data");
+  if (!saved) return;
+
+  const data = JSON.parse(saved);
+  let maxIdNum = 0;
+
+  data.forEach(item => {
+    const textarea = document.createElement("textarea");
+    textarea.id = item.id;
+    textarea.className = "draggable-textarea";
+    textarea.style.position = "absolute";
+    textarea.style.left = item.left;
+    textarea.style.top = item.top;
+    textarea.style.cursor = "grab";
+    textarea.value = item.text;
+    document.body.appendChild(textarea);
+    makeDraggable(textarea);
+
+    // カウント調整（後でふせん追加時にID被り防止）
+    const idNum = parseInt(item.id.split("_").pop());
+    if (!isNaN(idNum)) maxIdNum = Math.max(maxIdNum, idNum);
+  });
+
+  // 次に追加するふせんのIDをズレないよう調整
+  count = maxIdNum + 1;
+});
+
 </script>
     
 </body>

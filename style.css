@@ -1,7 +1,7 @@
 
 
 
-#text {
+textarea {    
     position: absolute;
     top: 100px;
     left: 100px;
@@ -9,11 +9,28 @@
     height: 150px;
     cursor: move;
     overflow: auto;
+    font-size: 30px;
 }
 
 .trash{
     top: 5%;
     float: right;
     width: 50px;
+    height: 50px;
+}
+
+.trash.over {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.menu{
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+button{
+    width: 100px;
     height: 50px;
 }
