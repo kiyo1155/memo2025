@@ -9,10 +9,10 @@
 </head>
 
 <body>
+    <p>事業アイデアはここで考えよう</p>
     <img src="ごみ箱.png" alt="ごみ箱" class="trash">
     <div class="menu">
         <button id="add">ふせん追加</button>
-        <button id="add2">枠追加</button>
         <button id="erase">全取り消し</button>
         <button id="save">保存</button>    
     </div>
@@ -208,6 +208,14 @@ window.addEventListener("DOMContentLoaded", function () {
 
   // 次に追加するふせんのIDをズレないよう調整
   count = maxIdNum + 1;
+});
+
+$("#erase").on("click", function () {
+  // 画面上のふせんを全削除
+  $(".draggable-textarea").remove();
+
+  // 保存データも削除
+  localStorage.removeItem("fusen_data");
 });
 
 </script>
